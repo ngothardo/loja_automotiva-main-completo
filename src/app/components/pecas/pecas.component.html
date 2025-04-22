@@ -1,0 +1,7 @@
+<h2>📦 Cadastrar Peça</h2>
+<form (ngSubmit)="cadastrar()">
+  <label>Nome: <input [(ngModel)]="novaPeca.nome" name="nome" required></label><br>
+  <label>Preço: <input type="number" [(ngModel)]="novaPeca.preco" name="preco" required></label><br>
+  <label>Quantidade: <input type="number" [(ngModel)]="novaPeca.quantidade" name="quantidade" required></label><br>
+  <button type="submit">Cadastrar</button>
+</form>

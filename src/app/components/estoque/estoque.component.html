@@ -1,0 +1,6 @@
+<h2>📦 Estoque</h2>
+<ul>
+  <li *ngFor="let peca of pecaService.getEstoque(); let i = index">
+    {{ i + 1 }} - {{ peca.nome }} - R$ {{ peca.preco.toFixed(2) }} - {{ peca.quantidade }} un.
+  </li>
+</ul>

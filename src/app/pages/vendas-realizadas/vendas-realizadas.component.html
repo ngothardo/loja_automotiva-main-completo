@@ -1,0 +1,25 @@
+
+<div class="container mt-4">
+  <h2>🧾 Vendas Realizadas</h2>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Quantidade</th>
+        <th>Preço</th>
+        <th>Subtotal</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let venda of vendas">
+        <td>{{ venda.produto }}</td>
+        <td>{{ venda.quantidade }}</td>
+        <td>R$ {{ venda.preco }}</td>
+        <td>R$ {{ venda.subtotal }}</td>
+        <td>{{ venda.data }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 class="text-end">💰 Total: R$ {{ total }}</h4>
+</div>

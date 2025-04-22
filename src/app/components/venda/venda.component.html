@@ -1,0 +1,40 @@
+
+<div class="container mt-4">
+  <h2>💸 Realizar Venda</h2>
+  <form (ngSubmit)="vender()" class="mb-4">
+    <div class="mb-3">
+      <label class="form-label">Produto</label>
+      <select class="form-select" [(ngModel)]="produtoSelecionado" name="produto" required>
+        <option *ngFor="let peca of pecaService.getEstoque()" [value]="peca.nome">
+          {{ peca.nome }}
+        </option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Quantidade</label>
+      <input type="number" class="form-control" [(ngModel)]="quantidade" name="quantidade" min="1" required>
+    </div>
+    <button type="submit" class="btn btn-success me-2">✅ Vender</button>
+    <button type="button" class="btn btn-secondary" (click)="imprimirRecibo()" [disabled]="!ultimaVenda">🖨️ Imprimir Recibo</button>
+  </form>
+
+  <!-- Toast de sucesso -->
+  <div
+    *ngIf="mensagem"
+    class="toast align-items-center text-white bg-success border-0 show"
+    style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; min-width: 300px"
+    role="alert"
+  >
+    <div class="d-flex">
+      <div class="toast-body">
+        {{ mensagem }}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Close" (click)="mensagem=''"></button>
+    </div>
+  </div>
+
+  <!-- Áudio de sucesso -->
+  <audio #audioSucesso>
+    <source src="assets/sucesso.mp3" type="audio/mpeg" />
+  </audio>
+</div>

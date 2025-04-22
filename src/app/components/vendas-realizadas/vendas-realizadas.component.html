@@ -1,0 +1,23 @@
+
+<h2>🧾 Vendas Realizadas</h2>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Quantidade</th>
+      <th>Preço Unitário (R$)</th>
+      <th>Subtotal (R$)</th>
+      <th>Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let venda of vendas">
+      <td>{{ venda.produto }}</td>
+      <td>{{ venda.quantidade }}</td>
+      <td>{{ venda.preco | currency:'BRL':'symbol':'1.2-2' }}</td>
+      <td>{{ venda.subtotal | currency:'BRL':'symbol':'1.2-2' }}</td>
+      <td>{{ venda.data }}</td>
+    </tr>
+  </tbody>
+</table>
+<h4><strong>Total: {{ total | currency:'BRL':'symbol':'1.2-2' }}</strong></h4>
