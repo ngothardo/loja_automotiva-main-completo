@@ -1,19 +1,21 @@
 import { Component } from '@angular/core';
-import { PecaService } from '../../services/peca.service';
-import { Peca } from '../../models/peca.model';
 
 @Component({
   selector: 'app-cadastro-peca',
   templateUrl: './cadastro-peca.component.html'
 })
 export class CadastroPecaComponent {
-  novaPeca: Peca = { nome: '', preco: 0, quantidade: 0 };
-
-  constructor(private pecaService: PecaService) {}
+  novaPeca = {
+    nome: '',
+    preco: 0,
+    estoque: 0
+  };
 
   cadastrar() {
-    this.pecaService.adicionarPeca(this.novaPeca);
+    const pecas = JSON.parse(localStorage.getItem('pecas') || '[]');
+    pecas.push(this.novaPeca);
+    localStorage.setItem('pecas', JSON.stringify(pecas));
+    this.novaPeca = { nome: '', preco: 0, estoque: 0 };
     alert('Peça cadastrada com sucesso!');
-    this.novaPeca = { nome: '', preco: 0, quantidade: 0 };
   }
 }

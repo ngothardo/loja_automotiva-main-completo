@@ -1,22 +1,14 @@
-import { Component } from '@angular/core';
-import { PecaService } from '../../services/peca.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-pecas',
-  templateUrl: './pecas.component.html',
-  styleUrls: ['./pecas.component.css']
+  selector: 'app-estoque',
+  templateUrl: './pecas.component.html'
 })
-export class PecasComponent {
-  novaPeca = {
-    nome: '',
-    preco: 0,
-    quantidade: 0
-  };
+export class EstoqueComponent implements OnInit {
+  pecas: any[] = [];
 
-  constructor(private pecaService: PecaService) {}
-
-  cadastrar() {
-    this.pecaService.adicionarPeca(this.novaPeca);
-    this.novaPeca = { nome: '', preco: 0, quantidade: 0 };
+  ngOnInit(): void {
+    const dados = localStorage.getItem('pecas');
+    this.pecas = dados ? JSON.parse(dados) : [];
   }
 }

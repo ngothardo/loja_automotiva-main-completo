@@ -1,31 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { VendaService, Venda } from '../../services/venda.service';
+import { Venda } from './venda.model';
 
 @Component({
   selector: 'app-vendas-realizadas',
-  templateUrl: './vendas-realizadas.component.html',
-  styleUrls: ['./vendas-realizadas.component.css']
+  templateUrl: './vendas-realizadas.component.html'
 })
 export class VendasRealizadasComponent implements OnInit {
   vendas: Venda[] = [];
   total: number = 0;
 
-  constructor(private vendaService: VendaService) {}
-
   ngOnInit(): void {
-    this.vendas = this.vendaService.getVendas().map(v => {
-      const preco = Number(v.preco) || 0;
-      const quantidade = Number(v.quantidade) || 0;
-      const subtotal = preco * quantidade;
-
-      return {
-        ...v,
-        preco,
-        quantidade,
-        subtotal
-      };
-    });
-
-    this.total = this.vendas.reduce((acc, v) => acc + v.subtotal, 0);
+    const dados = localStorage.getItem('vendas');
+    this.vendas = dados ? JSON.parse(dados) : [];
+    this.total = this.vendas.reduce((acc, v) => acc + Number(v.valor), 0);
   }
 }

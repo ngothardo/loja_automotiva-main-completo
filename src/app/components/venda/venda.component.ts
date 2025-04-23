@@ -1,60 +1,86 @@
-
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { PecaService } from '../../services/peca.service';
-import { VendaService, Venda } from '../../services/venda.service';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-venda',
-  templateUrl: './venda.component.html',
-  styleUrls: ['./venda.component.css']
+  templateUrl: './venda.component.html'
 })
-export class VendaComponent {
-  produtoSelecionado = '';
-  quantidade = 1;
+export class VendaComponent implements OnInit {
+  pecas: any[] = [];
+  produtoSelecionado: string = '';
+  quantidade: number = 1;
+  formaPagamento: string = 'Dinheiro';
   mensagem: string = '';
-  ultimaVenda: Venda | null = null;
+  ultimaVenda: any = null;
 
-  @ViewChild('audioSucesso') audioRef!: ElementRef<HTMLAudioElement>;
+  @ViewChild('audioSucesso') audioSucesso!: ElementRef<HTMLAudioElement>;
 
-  constructor(public pecaService: PecaService, private vendaService: VendaService) {}
+  ngOnInit(): void {
+    const dados = localStorage.getItem('pecas');
+    this.pecas = dados ? JSON.parse(dados) : [];
+    console.log('PEÇAS CARREGADAS:', this.pecas);
+  }
+  
 
-  vender() {
-    const peca = this.pecaService.getPecaByNome(this.produtoSelecionado);
-    if (peca && this.quantidade > 0 && peca.quantidade >= this.quantidade) {
-      const venda = {
-        produto: peca.nome,
-        quantidade: this.quantidade,
-        preco: peca.preco
-      };
-      this.vendaService.registrarVenda(venda);
-      this.pecaService.atualizarEstoque(peca.nome, this.quantidade);
-      this.ultimaVenda = {
-        ...venda,
-        subtotal: peca.preco * this.quantidade,
-        data: new Date().toLocaleDateString('pt-BR')
-      };
-      this.produtoSelecionado = '';
-      this.quantidade = 1;
-      this.mensagem = '✅ Venda realizada com sucesso!';
-      this.audioRef.nativeElement.play();
-      setTimeout(() => this.mensagem = '', 3000);
-    } else {
-      this.mensagem = '❌ Estoque insuficiente ou dados inválidos!';
-      setTimeout(() => this.mensagem = '', 3000);
+  vender(): void {
+    const peca = this.pecas.find(p => p.nome === this.produtoSelecionado);
+
+    if (!peca) {
+      alert('Selecione uma peça válida.');
+      return;
     }
+
+    if (this.quantidade > peca.estoque) {
+      alert('Quantidade maior que o estoque disponível.');
+      return;
+    }
+
+    const venda = {
+      data: new Date().toLocaleDateString(),
+      hora: new Date().toLocaleTimeString(),
+      pedido: Math.floor(Math.random() * 1000),
+      codigo: Math.floor(Math.random() * 1000),
+      produto: peca.nome,
+      valor: peca.preco * this.quantidade,
+      formaPagamento: this.formaPagamento
+    };
+
+    const vendas = JSON.parse(localStorage.getItem('vendas') || '[]');
+    vendas.push(venda);
+    localStorage.setItem('vendas', JSON.stringify(vendas));
+
+    // Atualiza estoque
+    peca.estoque -= this.quantidade;
+    localStorage.setItem('pecas', JSON.stringify(this.pecas));
+
+    this.ultimaVenda = venda;
+    this.mensagem = 'Venda realizada com sucesso!';
+    this.produtoSelecionado = '';
+    this.quantidade = 1;
+    this.formaPagamento = 'Dinheiro';
+
+    this.audioSucesso?.nativeElement?.play();
   }
 
-  imprimirRecibo() {
+  imprimirRecibo(): void {
     if (!this.ultimaVenda) return;
+
     const recibo = `
-      Produto: ${this.ultimaVenda.produto}\n
-      Quantidade: ${this.ultimaVenda.quantidade}\n
-      Preço Unitário: R$ ${this.ultimaVenda.preco.toFixed(2)}\n
-      Subtotal: R$ ${this.ultimaVenda.subtotal.toFixed(2)}\n
-      Data: ${this.ultimaVenda.data}\n
+      🚗 Loja Automotiva
+      ---------------------------
+      Produto: ${this.ultimaVenda.produto}
+      Quantidade: ${this.quantidade}
+      Valor: R$ ${this.ultimaVenda.valor.toFixed(2)}
+      Forma de Pagamento: ${this.ultimaVenda.formaPagamento}
+      Data: ${this.ultimaVenda.data}
+      Hora: ${this.ultimaVenda.hora}
+      ---------------------------
+      Obrigado pela compra!
+     !! Volte Sempre !!
     `;
-    const janela = window.open('', '_blank');
-    janela?.document.write(`<pre>${recibo}</pre>`);
-    janela?.print();
+
+    const win = window.open('', '_blank');
+    win?.document.write(`<pre>${recibo}</pre>`);
+    win?.print();
+    win?.close();
   }
 }

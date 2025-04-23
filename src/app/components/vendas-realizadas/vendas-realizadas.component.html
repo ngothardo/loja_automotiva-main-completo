@@ -1,23 +1,34 @@
-
 <h2>🧾 Vendas Realizadas</h2>
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th>Item</th>
-      <th>Quantidade</th>
-      <th>Preço Unitário (R$)</th>
-      <th>Subtotal (R$)</th>
       <th>Data</th>
+      <th>Hora</th>
+      <th>Pedido</th>
+      <th>Código</th>
+      <th>Produto</th>
+      <th>Valor (R$)</th>
+      <th>Forma de Pagamento</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let venda of vendas">
-      <td>{{ venda.produto }}</td>
-      <td>{{ venda.quantidade }}</td>
-      <td>{{ venda.preco | currency:'BRL':'symbol':'1.2-2' }}</td>
-      <td>{{ venda.subtotal | currency:'BRL':'symbol':'1.2-2' }}</td>
       <td>{{ venda.data }}</td>
+      <td>{{ venda.hora }}</td>
+      <td>{{ venda.pedido }}</td>
+      <td>{{ venda.codigo }}</td>
+      <td>{{ venda.produto }}</td>
+      <td>{{ venda.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+      <td>
+        <span [ngClass]="{
+          'badge bg-success': venda.formaPagamento === 'Dinheiro',
+          'badge bg-info': venda.formaPagamento === 'Pix',
+          'badge bg-primary': venda.formaPagamento === 'Cartão',
+          'badge bg-warning text-dark': venda.formaPagamento === 'Crédito'
+        }">{{ venda.formaPagamento }}</span>
+      </td>
     </tr>
   </tbody>
 </table>
+
 <h4><strong>Total: {{ total | currency:'BRL':'symbol':'1.2-2' }}</strong></h4>

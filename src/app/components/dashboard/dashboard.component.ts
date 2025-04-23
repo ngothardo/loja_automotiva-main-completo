@@ -1,57 +1,59 @@
-
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import Chart from 'chart.js/auto';
-import { VendaService } from '../../services/venda.service';
-import { PecaService } from '../../services/peca.service';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  templateUrl: './dashboard.component.html'
 })
-export class DashboardComponent implements OnInit {
-  constructor(private vendaService: VendaService, private pecaService: PecaService) {}
+export class DashboardComponent implements AfterViewInit {
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.gerarGraficoVendas();
     this.gerarGraficoEstoque();
   }
 
   gerarGraficoVendas() {
-    const vendas = this.vendaService.getVendas();
-    const porData: { [data: string]: number } = {};
-
-    vendas.forEach(venda => {
-      if (!porData[venda.data]) porData[venda.data] = 0;
-      porData[venda.data] += venda.subtotal;
-    });
-
     new Chart('graficoVendas', {
       type: 'bar',
       data: {
-        labels: Object.keys(porData),
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai'],
         datasets: [{
-          label: 'Total em R$ por Data',
-          data: Object.values(porData),
+          label: 'Vendas (R$)',
+          data: [500, 800, 600, 750, 900],
           borderWidth: 1
         }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Gráfico de Vendas'
+          }
+        }
       }
     });
   }
 
   gerarGraficoEstoque() {
-    const pecas = this.pecaService.getEstoque();
-    const nomes = pecas.map(p => p.nome);
-    const quantidades = pecas.map(p => p.quantidade);
-
     new Chart('graficoEstoque', {
       type: 'pie',
       data: {
-        labels: nomes,
+        labels: ['Peça A', 'Peça B', 'Peça C'],
         datasets: [{
-          label: 'Estoque',
-          data: quantidades
+          label: 'Estoque Atual',
+          data: [20, 15, 30],
+          borderWidth: 1
         }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Gráfico de Estoque'
+          }
+        }
       }
     });
   }

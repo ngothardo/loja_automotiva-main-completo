@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
-import { PecaService } from '../../services/peca.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-estoque',
-  templateUrl: './estoque.component.html',
-  styleUrls: ['./estoque.component.css']
+  templateUrl: './estoque.component.html'
 })
-export class EstoqueComponent {
-  constructor(public pecaService: PecaService) {}
+export class EstoqueComponent implements OnInit {
+  pecas: any[] = [];
+
+  ngOnInit(): void {
+    const dados = localStorage.getItem('pecas');
+    this.pecas = dados ? JSON.parse(dados) : [];
+  }
 }
